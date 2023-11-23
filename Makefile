@@ -17,7 +17,7 @@ OBJ := $(patsubst %.cpp,%.o, $(SRC))
 
 TARGET := testJson
 CC := g++
-CXXFLAG = -std=c++11
+CXXFLAG = -std=c++11 -g
 CFLAGS := -I$(INCLUDE_DIR)
 
 all: PRE_CHECK $(TARGET) 

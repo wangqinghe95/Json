@@ -45,6 +45,9 @@ private:
     static bool isEndOfValue(char ch);
     static bool isSepartor(char ch);
     static void pushBackTokens(list<JsonToken> &tokens, char ch, const string::const_iterator &pos);
+
+    static JsonValue generateJsonValueViaTokens(list<JsonToken>& tokens);
+    static JsonValue generateJsonObjectViaTokens(list<JsonToken>& tokens);
 };
 
 #endif

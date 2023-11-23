@@ -4,6 +4,8 @@
 #include "FileOperation.hpp"
 #include "Logger.hpp"
 
+#include <type_traits>
+
 const char* JSONFILENAME = "./unittest.json";
 // const std::string config_file("/home/user/Desktop/Github/Json/unittest/unittest.json");
 const std::string config_file("./unittest/unittest.json");
@@ -28,6 +30,12 @@ int main()
     DEBUG("str_jsong:size", str_json.size());
 
     JsonValue root = JsonParser::toJsonValue(str_json);
+    JsonValueType type = root.getJsonValueType();
+    
+    // DEBUG("type ", static_cast<std::underlying_type<JsonValueType>::type>(type));
+    DEBUG(JsonParser::toJsonString(root));
+
+
 
     return 0;
 }
