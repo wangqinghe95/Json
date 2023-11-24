@@ -10,7 +10,8 @@ JsonValue::JsonValue()
 JsonValue::JsonValue(const string& value)
 {
     setJsonType(JsonValueType::String);
-    m_value._string->assign(value);
+    // m_value._string->assign(value);
+    m_value._string = new string(value);
 }
 
 JsonValue::JsonValue(const string::const_iterator& begin, const string::const_iterator& end)
@@ -34,6 +35,7 @@ JsonValue::JsonValue(const JsonObject& value)
 JsonValue& JsonValue::operator=(const JsonValue &other)
 {
     DEBUG("operator=");
+
     JsonValue(other).swap(*this);
     return *this;
 }
@@ -78,6 +80,7 @@ bool JsonValue::toBoolean() const
 
 JsonValue::JsonValue(const JsonValue& other)
 {
+    // DEBUG("const JsonValue& other");
     m_type = other.getJsonValueType();
     switch (m_type)
     {

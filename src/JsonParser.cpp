@@ -103,13 +103,11 @@ JsonValue JsonParser::toJsonValue(const string& strJson)
     }
 
     return generateJsonValueViaTokens(tokens);
-    // JsonValue res = generateJsonValueViaTokens(tokens);
-    // DEBUG("type ", static_cast<std::underlying_type<JsonValueType>::type>(res.getJsonValueType()));
-    // return res;
 }
 
 string JsonParser::toJsonString(const JsonValue& jsonValue)
 {
+    // DEBUG("toJsonString");
     string strJson;
     switch (jsonValue.getJsonValueType())
     {
@@ -136,7 +134,35 @@ string JsonParser::toJsonString(const JsonValue& jsonValue)
     }
     case JsonValueType::String: {
         strJson.push_back('"');
-        strJson.append(jsonValue.toString());
+        for(char ch : jsonValue.toString()) {
+            switch (ch)
+            {
+            case '\"':
+                strJson.append({'\\', '\"'});
+                break;
+            case '\\':
+                strJson.append({'\\', '\\'});
+                break;
+            case '\b':
+                strJson.append({'\\', 'b'});
+                break;
+            case '\f':
+                strJson.append({'\\', 'f'});
+                break;
+            case '\n':
+                strJson.append({'\\', '\n'});
+                break;
+            case '\r':
+                strJson.append({'\\', 'r'});
+                break;
+            case '\t':
+                strJson.append({'\\', 't'});
+                break;
+            default:
+                strJson.push_back(ch);
+                break;
+            }
+        }
         strJson.push_back('"');
         break;
     }
@@ -152,8 +178,8 @@ string JsonParser::toJsonString(const JsonValue& jsonValue)
             else {
                 strJson.push_back(',');
             }
-
-            strJson.append(toJsonString(kv.first));
+            string key = toJsonString(kv.first);
+            strJson.append(key);
             strJson.push_back(',');
             strJson.append(toJsonString(kv.second));
         }
@@ -161,10 +187,14 @@ string JsonParser::toJsonString(const JsonValue& jsonValue)
         break;
     }
     case JsonValueType::Array:
+    {
+        break;
+    }
     
     default:
         break;
     }
+    return strJson;
 }
 
 bool JsonParser::isSpace(char ch)
@@ -221,11 +251,6 @@ JsonValue JsonParser::generateJsonValueViaTokens(list<JsonToken>& tokens)
     
     if(TokenType::ObjectBegin == token.m_token){
         return generateJsonObjectViaTokens(tokens);
-        // JsonValue res = generateJsonObjectViaTokens(tokens);
-        
-        // DEBUG("type ", static_cast<std::underlying_type<JsonValueType>::type>(res.getJsonValueType()));
-
-        // return res;
     }
 
     if(TokenType::String == token.m_token){
