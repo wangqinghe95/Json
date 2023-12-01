@@ -8,6 +8,13 @@ enum class ParserState
     OBJECT_OR_ARRAY_BEGIN,  // '[' or '{'
     STRING_BEGIN,
     STRING,
+
+    // number, integer or double
+    NUMBER_BEGIN,
+    NUMBER_POINT,
+    NUMBER_BEFORE_POINT,
+    NUMBER_AFTER_POINT,
+
     ERROR,
     END,
 
@@ -38,6 +45,15 @@ JsonValue JsonParser::toJsonValue(const string& strJson)
             }
             else if('"' == ch) {
                 state = ParserState::STRING_BEGIN;
+            }
+            else if(ch >= '0' && ch <= '9') {
+                tokens.emplace_back(TokenType::Double, p_cur);
+                p--;
+                state = ParserState::NUMBER_BEGIN;
+            }
+            else if(ch == '-') {
+                tokens.emplace_back(TokenType::Double, p_cur);
+                state = ParserState::NUMBER_BEGIN;
             }
             else {
                 state = ParserState::ERROR;
@@ -73,6 +89,61 @@ JsonValue JsonParser::toJsonValue(const string& strJson)
             }
             else if('\\' == ch) {
                 state = ParserState::ESPACE;
+            }
+            break;
+        }
+        case ParserState::NUMBER_BEGIN:
+        {
+            if(ch == '0') {
+                state = ParserState::NUMBER_POINT;
+            }
+            else if(ch >= '1' && ch <= '9') {
+                state = ParserState::NUMBER_BEFORE_POINT;
+            }
+            else {
+                state = ParserState::ERROR;
+            }
+            break;
+        }
+        case ParserState::NUMBER_POINT:
+        {
+            if (ch == '.') {
+                state = ParserState::NUMBER_AFTER_POINT;
+            }
+            else if (ch == ',' || isSpace(ch) || isEndOfValue(ch)) {
+                tokens.back().m_token = TokenType::LongLong;
+                tokens.back().m_end = p_cur;
+                p--;
+                state = ParserState::END;
+            }
+            else {
+                state = ParserState::ERROR;
+            }
+            break;
+        }
+        case ParserState::NUMBER_BEFORE_POINT:
+        {
+            if(ch >= '0' && ch <= '9') {
+                // do nothing
+            }
+            else {
+                p--;
+                state = ParserState::NUMBER_POINT;
+            }
+            break;
+        }
+        case ParserState::NUMBER_AFTER_POINT:
+        {
+            if(ch >= '0' && ch <= '9') {
+                // nothing to do
+            }
+            else if (ch == ',' || isSpace(ch) || isEndOfValue(ch)) {
+                tokens.back().m_end = p_cur;
+                p--;
+                state = ParserState::END;
+            }
+            else {
+                state = ParserState::ERROR;
             }
             break;
         }
@@ -180,7 +251,7 @@ string JsonParser::toJsonString(const JsonValue& jsonValue)
             }
             string key = toJsonString(kv.first);
             strJson.append(key);
-            strJson.push_back(',');
+            strJson.push_back(':');
             strJson.append(toJsonString(kv.second));
         }
         strJson.push_back('}');
@@ -254,7 +325,18 @@ JsonValue JsonParser::generateJsonValueViaTokens(list<JsonToken>& tokens)
     }
 
     if(TokenType::String == token.m_token){
-        return JsonValue(token.m_start, token.m_end);
+        string s = string(token.m_start, token.m_end);
+        return JsonValue(s);
+    }
+    else if(TokenType::Double == token.m_token) {
+        double x = atof(string(token.m_start, token.m_end).c_str());
+        return JsonValue(x);
+        // return JsonValue(atof(string(token.m_start, token.m_end).data()));
+    }
+    else if (TokenType::LongLong == token.m_token) {
+        long long l = atoll(string(token.m_start, token.m_end).c_str());
+        return JsonValue(l);
+        // return JsonValue(atoll(string(token.m_start, token.m_end).data()));
     }
     else {
         // nothing
@@ -300,8 +382,8 @@ JsonValue JsonParser::generateJsonObjectViaTokens(list<JsonToken>& tokens)
             return JsonValue();
         }
 
-        tokens.pop_front();
-        return JsonValue(jsonObject);        
+            
     }
-    
+    tokens.pop_front();
+    return JsonValue(jsonObject);
 }

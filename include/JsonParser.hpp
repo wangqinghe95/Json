@@ -17,7 +17,9 @@ enum class TokenType
 
     MemberSeparaotr,
 
-    String
+    String,
+    Double,
+    LongLong,
 };
 
 class JsonToken

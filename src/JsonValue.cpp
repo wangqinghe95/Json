@@ -3,7 +3,6 @@
 
 JsonValue::JsonValue()
 {
-    DEBUG("JsonValue NULL");
     setJsonType(JsonValueType::Null);
 }
 
@@ -24,6 +23,18 @@ JsonValue::JsonValue(bool value)
 {
     setJsonType(JsonValueType::Boolean);
     m_value._bool = value;
+}
+
+JsonValue::JsonValue(long long value)
+{
+    setJsonType(JsonValueType::Integer);
+    m_value._longlong = value;
+}
+
+JsonValue::JsonValue(double value)
+{
+    setJsonType(JsonValueType::Double);
+    m_value._longlong = value;
 }
 
 JsonValue::JsonValue(const JsonObject& value)
@@ -98,6 +109,24 @@ JsonValue::JsonValue(const JsonValue& other)
         break;
     case JsonValueType::Array:
         m_value._array = new JsonArray(*other.m_value._array);
+        break;
+    default:
+        break;
+    }
+}
+
+JsonValue::~JsonValue()
+{
+    switch (m_type)
+    {
+    case JsonValueType::String:
+        delete m_value._string;
+        break;
+    case JsonValueType::Object:
+        delete m_value._object;
+        break;
+    case JsonValueType::Array:
+        delete m_value._array;
         break;
     default:
         break;

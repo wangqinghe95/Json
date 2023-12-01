@@ -30,12 +30,9 @@ int main()
     DEBUG("str_jsong:size", str_json.size());
 
     JsonValue root = JsonParser::toJsonValue(str_json);
-    JsonValueType type = root.getJsonValueType();
     
     // DEBUG("type ", static_cast<std::underlying_type<JsonValueType>::type>(type));
     DEBUG(JsonParser::toJsonString(root));
-
-
 
     return 0;
 }

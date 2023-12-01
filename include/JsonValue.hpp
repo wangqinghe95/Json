@@ -30,9 +30,12 @@ public:
     JsonValue(const string& value);
     JsonValue(const string::const_iterator& begin, const string::const_iterator& end);
     JsonValue(bool value);
+    JsonValue(long long value);
+    JsonValue(double value);
     JsonValue(const JsonObject& value);
-    JsonValue(const JsonValue& other) ;
+    JsonValue(const JsonValue& other);
     JsonValue& operator=(const JsonValue &other);
+    ~JsonValue();
 
     string toString() const;
     bool toBoolean() const;
