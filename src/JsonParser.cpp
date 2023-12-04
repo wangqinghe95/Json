@@ -334,6 +334,7 @@ string JsonParser::toJsonString(const JsonValue& jsonValue)
         break;
     }
     case JsonValueType::Object: {
+        strJson.push_back('\n');
         strJson.push_back('{');
         bool isFirst = true;
         JsonObject jsonObject = jsonValue.toObject();
@@ -344,6 +345,7 @@ string JsonParser::toJsonString(const JsonValue& jsonValue)
             }
             else {
                 strJson.push_back(',');
+                strJson.push_back('\n');
             }
             string key = toJsonString(kv.first);
             strJson.append(key);
@@ -351,10 +353,12 @@ string JsonParser::toJsonString(const JsonValue& jsonValue)
             strJson.append(toJsonString(kv.second));
         }
         strJson.push_back('}');
+        strJson.push_back('\n');
         break;
     }
     case JsonValueType::Array:
     {
+        strJson.push_back('\n');
         strJson.push_back('[');
         bool isFirst = true;
         for(const auto& v : jsonValue.toArray()) 
@@ -368,6 +372,7 @@ string JsonParser::toJsonString(const JsonValue& jsonValue)
             strJson.append(toJsonString(v));
         }
         strJson.push_back(']');
+        strJson.push_back('\n');
         break;
     }
     

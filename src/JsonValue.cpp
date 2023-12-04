@@ -103,6 +103,11 @@ bool JsonValue::toBoolean() const
     return false;
 }
 
+const JsonValue& JsonValue::operator[](const string& key) const
+{
+    return (*m_value._object)[key];
+}
+
 JsonValue::JsonValue(const JsonValue& other)
 {
     // DEBUG("const JsonValue& other");
@@ -172,6 +177,11 @@ JsonObject::JsonObject()
 
 }
 
+bool JsonObject::contains(const string& key) const
+{
+    return m_JsonObject.find(key) != m_JsonObject.end();
+}
+
 void JsonObject::insert(const string& key, const JsonValue& value)
 {
     m_JsonObject.emplace(key,value);
@@ -179,7 +189,8 @@ void JsonObject::insert(const string& key, const JsonValue& value)
 
 const JsonValue& JsonObject::operator[](const string& key) const
 {
-
+    auto it = m_JsonObject.find(key);
+    return (*it).second;
 }
 
 map<string, JsonValue>::const_iterator JsonObject::begin() const

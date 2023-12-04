@@ -38,17 +38,24 @@ public:
     JsonValue& operator=(const JsonValue &other);
     ~JsonValue();
 
-    string toString() const;
     bool toBoolean() const;
-    long long toLongLong() const;
+
+    const JsonValue& operator[](const string& key) const;
+
     double toDouble() const;
+
     JsonObject toObject() const;
     JsonArray toArray() const;
-
     JsonValueType getJsonValueType() const;
+
+    long long toLongLong() const;
+
+    string toString() const;
+
 private:
     void setJsonType(JsonValueType type);
     void swap(JsonValue &other);
+
 private:
     JsonValueType m_type;
     union 
@@ -68,11 +75,14 @@ class JsonObject
 public:
     JsonObject();
 
-    void insert(const string& key, const JsonValue& value);
+    bool contains(const string& key) const;
+
     const JsonValue &operator[](const string& key) const;
 
     map<string, JsonValue>::const_iterator begin() const;
     map<string, JsonValue>::const_iterator end() const;
+
+    void insert(const string& key, const JsonValue& value);
 
 private:
     map<string,JsonValue> m_JsonObject;
@@ -83,10 +93,9 @@ class JsonArray
 public:
     JsonArray();
 
-    void append(const JsonValue &value);
-
     const JsonValue &operator[](size_t index) const;
 
+    void append(const JsonValue &value);
     vector<JsonValue>::const_iterator begin() const;
     vector<JsonValue>::const_iterator end() const;
 
