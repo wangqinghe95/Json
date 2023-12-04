@@ -53,6 +53,7 @@ private:
 
     static JsonValue generateJsonValueViaTokens(list<JsonToken>& tokens);
     static JsonValue generateJsonObjectViaTokens(list<JsonToken>& tokens);
+    static JsonValue generateJsonArrayViaTokens(list<JsonToken>& tokens);
 };
 
 #endif

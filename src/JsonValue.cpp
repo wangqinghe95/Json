@@ -43,6 +43,12 @@ JsonValue::JsonValue(const JsonObject& value)
     m_value._object = new JsonObject(value);
 }
 
+JsonValue::JsonValue(const JsonArray& value)
+{
+    setJsonType(JsonValueType::Array);
+    m_value._array = new JsonArray(value);
+}
+
 JsonValue& JsonValue::operator=(const JsonValue &other)
 {
     DEBUG("operator=");
@@ -79,6 +85,14 @@ JsonObject JsonValue::toObject() const
         return *m_value._object;
     }
     return JsonObject();
+}
+
+JsonArray JsonValue::toArray() const
+{
+    if(JsonValueType::Array == m_type) {
+        return *m_value._array;
+    }
+    return JsonArray();
 }
 
 bool JsonValue::toBoolean() const
@@ -184,4 +198,23 @@ map<string, JsonValue>::const_iterator JsonObject::end() const
 JsonArray::JsonArray()
 {
 
+}
+
+void JsonArray::append(const JsonValue &value)
+{
+    m_JsonArray.push_back(value);
+}
+
+const JsonValue& JsonArray::operator[](size_t index) const
+{
+    return m_JsonArray[index];
+}
+
+vector<JsonValue>::const_iterator JsonArray::begin() const
+{
+    return m_JsonArray.begin();
+}
+vector<JsonValue>::const_iterator JsonArray::end() const
+{
+    return m_JsonArray.end();
 }

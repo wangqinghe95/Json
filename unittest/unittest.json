@@ -8,5 +8,8 @@
     "object":{
         "Negative_Int":-15,
         "Negative_Doube":-9.8
-    }
+    },
+    "Array":[
+        "name","age","sex",18,"Matthew"
+    ]
 }

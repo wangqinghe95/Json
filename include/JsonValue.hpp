@@ -34,6 +34,7 @@ public:
     JsonValue(double value);
     JsonValue(const JsonObject& value);
     JsonValue(const JsonValue& other);
+    JsonValue(const JsonArray& value);
     JsonValue& operator=(const JsonValue &other);
     ~JsonValue();
 
@@ -42,6 +43,7 @@ public:
     long long toLongLong() const;
     double toDouble() const;
     JsonObject toObject() const;
+    JsonArray toArray() const;
 
     JsonValueType getJsonValueType() const;
 private:
@@ -81,10 +83,15 @@ class JsonArray
 public:
     JsonArray();
 
+    void append(const JsonValue &value);
+
+    const JsonValue &operator[](size_t index) const;
+
+    vector<JsonValue>::const_iterator begin() const;
+    vector<JsonValue>::const_iterator end() const;
+
 private:
     vector<JsonValue> m_JsonArray;
 };
-
-
 
 #endif

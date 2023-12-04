@@ -355,6 +355,19 @@ string JsonParser::toJsonString(const JsonValue& jsonValue)
     }
     case JsonValueType::Array:
     {
+        strJson.push_back('[');
+        bool isFirst = true;
+        for(const auto& v : jsonValue.toArray()) 
+        {
+            if(isFirst) {
+                isFirst = false;
+            }
+            else {
+                strJson.push_back(',');
+            }
+            strJson.append(toJsonString(v));
+        }
+        strJson.push_back(']');
         break;
     }
     
@@ -419,6 +432,9 @@ JsonValue JsonParser::generateJsonValueViaTokens(list<JsonToken>& tokens)
     if(TokenType::ObjectBegin == token.m_token){
         return generateJsonObjectViaTokens(tokens);
     }
+    else if(TokenType::ArrayBegin == token.m_token) {
+        return generateJsonArrayViaTokens(tokens);
+    }
 
     if(TokenType::String == token.m_token){
         string s = string(token.m_start, token.m_end);
@@ -449,6 +465,34 @@ JsonValue JsonParser::generateJsonValueViaTokens(list<JsonToken>& tokens)
 
     return JsonValue();
 }
+
+JsonValue JsonParser::generateJsonArrayViaTokens(list<JsonToken>& tokens)
+{
+    JsonArray jsonArray;
+    while (TokenType::ArrayEnd != tokens.front().m_token)
+    {
+        JsonValue value = generateJsonValueViaTokens(tokens);
+        jsonArray.append(value);
+
+        if(tokens.empty()) {
+            return JsonValue();
+        }
+
+        if(TokenType::MemberSeparaotr == tokens.front().m_token) {
+            tokens.pop_front();
+        }
+        else if (TokenType::ArrayEnd == tokens.front().m_token) {
+            // nothing to do
+        }
+        else {
+            return JsonValue();
+        }
+    }
+    
+    tokens.pop_front();
+    return jsonArray;
+}
+
 
 JsonValue JsonParser::generateJsonObjectViaTokens(list<JsonToken>& tokens)
 {
