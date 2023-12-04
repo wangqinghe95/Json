@@ -22,6 +22,7 @@ enum class TokenType
     LongLong,
     True,
     False,
+    Null
 };
 
 class JsonToken

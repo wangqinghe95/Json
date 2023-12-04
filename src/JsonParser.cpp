@@ -26,6 +26,11 @@ enum class ParserState
     FAL_IN_FALSE,
     FALS_IN_FALSE,
 
+    // Null
+    N_IN_NULL,
+    NU_IN_NULL,
+    NUL_IN_NULL,
+
     ERROR,
     END,
 
@@ -73,6 +78,10 @@ JsonValue JsonParser::toJsonValue(const string& strJson)
             else if (ch == 'f') {
                 tokens.emplace_back(TokenType::False, p_cur);
                 state = ParserState::F_IN_FALSE;
+            }
+            else if (ch = 'n') {
+                tokens.emplace_back(TokenType::Null, p_cur);
+                state = ParserState::N_IN_NULL;
             }
             else {
                 state = ParserState::ERROR;
@@ -205,6 +214,27 @@ JsonValue JsonParser::toJsonValue(const string& strJson)
         case ParserState::FALS_IN_FALSE:
         {
             if(ch == 'e') {
+                tokens.back().m_end = p_cur;
+                state = ParserState::END;
+            }
+            else {
+                state = ParserState::ERROR;
+            }
+            break;
+        }
+        case ParserState::N_IN_NULL:
+        {
+            state = (ch == 'u' ? ParserState::NU_IN_NULL : ParserState::ERROR);
+            break;
+        }
+        case ParserState::NU_IN_NULL:
+        {
+            state = (ch == 'l' ? ParserState::NUL_IN_NULL : ParserState::ERROR);
+            break;
+        }
+        case ParserState::NUL_IN_NULL:
+        {
+            if(ch == 'l') {
                 tokens.back().m_end = p_cur;
                 state = ParserState::END;
             }
@@ -410,11 +440,14 @@ JsonValue JsonParser::generateJsonValueViaTokens(list<JsonToken>& tokens)
         return JsonValue(l);
         // return JsonValue(atoll(string(token.m_start, token.m_end).data()));
     }
+    else if (TokenType::Null == token.m_token) {
+        return JsonValue();
+    }
     else {
         // nothing
     }
 
-    // return JsonValue();
+    return JsonValue();
 }
 
 JsonValue JsonParser::generateJsonObjectViaTokens(list<JsonToken>& tokens)
