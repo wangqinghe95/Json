@@ -15,6 +15,11 @@ enum class ParserState
     NUMBER_BEFORE_POINT,
     NUMBER_AFTER_POINT,
 
+    // True
+    T_IN_TRUE,
+    TR_IN_TRUE,
+    TRU_IN_TRUE,
+
     ERROR,
     END,
 
@@ -54,6 +59,10 @@ JsonValue JsonParser::toJsonValue(const string& strJson)
             else if(ch == '-') {
                 tokens.emplace_back(TokenType::Double, p_cur);
                 state = ParserState::NUMBER_BEGIN;
+            }
+            else if(ch == 't') {
+                tokens.emplace_back(TokenType::True, p_cur);
+                state = ParserState::T_IN_TRUE;
             }
             else {
                 state = ParserState::ERROR;
@@ -140,6 +149,27 @@ JsonValue JsonParser::toJsonValue(const string& strJson)
             else if (ch == ',' || isSpace(ch) || isEndOfValue(ch)) {
                 tokens.back().m_end = p_cur;
                 p--;
+                state = ParserState::END;
+            }
+            else {
+                state = ParserState::ERROR;
+            }
+            break;
+        }
+        case ParserState::T_IN_TRUE:
+        {
+            state = (ch == 'r' ? ParserState::TR_IN_TRUE : ParserState::ERROR);
+            break;
+        }
+        case ParserState::TR_IN_TRUE:
+        {
+            state = (ch == 'u' ? ParserState::TRU_IN_TRUE : ParserState::ERROR);
+            break;
+        }
+        case ParserState::TRU_IN_TRUE:
+        {
+            if(ch == 'e') {
+                tokens.back().m_end = p_cur;
                 state = ParserState::END;
             }
             else {
@@ -327,6 +357,9 @@ JsonValue JsonParser::generateJsonValueViaTokens(list<JsonToken>& tokens)
     if(TokenType::String == token.m_token){
         string s = string(token.m_start, token.m_end);
         return JsonValue(s);
+    }
+    else if (TokenType::True == token.m_token) {
+        return JsonValue(true);
     }
     else if(TokenType::Double == token.m_token) {
         double x = atof(string(token.m_start, token.m_end).c_str());

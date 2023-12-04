@@ -1,5 +1,8 @@
 {
     "Integer":100,
     "Double":3.14,
-    "String":"test string"
+    "Negative_Int":-15,
+    "Negative_Doube":-9.8,
+    "String":"test string",
+    "True":true
 }
