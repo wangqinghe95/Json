@@ -200,7 +200,7 @@ string JsonParser::toJsonString(const JsonValue& jsonValue)
         break;
     }
     case JsonValueType::Double: {
-        strJson.append(std::to_string(jsonValue.toLongLong()));
+        strJson.append(std::to_string(jsonValue.toDouble()));
         break;
     }
     case JsonValueType::String: {
@@ -366,7 +366,6 @@ JsonValue JsonParser::generateJsonObjectViaTokens(list<JsonToken>& tokens)
         string key = string(token.m_start, token.m_end);
         JsonValue value = generateJsonValueViaTokens(tokens);
         jsonObject.insert(key,value);
-        DEBUG("string: ", value.toString());
 
         if(tokens.empty()) {
             return JsonValue();

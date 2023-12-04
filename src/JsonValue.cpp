@@ -34,7 +34,7 @@ JsonValue::JsonValue(long long value)
 JsonValue::JsonValue(double value)
 {
     setJsonType(JsonValueType::Double);
-    m_value._longlong = value;
+    m_value._double = value;
 }
 
 JsonValue::JsonValue(const JsonObject& value)
