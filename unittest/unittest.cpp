@@ -27,7 +27,7 @@ string readJsonFile(const string file_name)
 int main()
 {
     string str_json = readJsonFile(config_file);
-    DEBUG("str_jsong:size", str_json.size());
+    DEBUG("str_jsong:size", str_json.size(), " str_json: " , str_json);
 
     JsonValue root = JsonParser::toJsonValue(str_json);
     

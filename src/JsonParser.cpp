@@ -20,6 +20,12 @@ enum class ParserState
     TR_IN_TRUE,
     TRU_IN_TRUE,
 
+    // False
+    F_IN_FALSE,
+    FA_IN_FALSE,
+    FAL_IN_FALSE,
+    FALS_IN_FALSE,
+
     ERROR,
     END,
 
@@ -63,6 +69,10 @@ JsonValue JsonParser::toJsonValue(const string& strJson)
             else if(ch == 't') {
                 tokens.emplace_back(TokenType::True, p_cur);
                 state = ParserState::T_IN_TRUE;
+            }
+            else if (ch == 'f') {
+                tokens.emplace_back(TokenType::False, p_cur);
+                state = ParserState::F_IN_FALSE;
             }
             else {
                 state = ParserState::ERROR;
@@ -167,6 +177,32 @@ JsonValue JsonParser::toJsonValue(const string& strJson)
             break;
         }
         case ParserState::TRU_IN_TRUE:
+        {
+            if(ch == 'e') {
+                tokens.back().m_end = p_cur;
+                state = ParserState::END;
+            }
+            else {
+                state = ParserState::ERROR;
+            }
+            break;
+        }
+        case ParserState::F_IN_FALSE:
+        {
+            state = (ch == 'a' ? ParserState::FA_IN_FALSE : ParserState::ERROR);
+            break;
+        }
+        case ParserState::FA_IN_FALSE:
+        {
+            state = (ch == 'l' ? ParserState::FAL_IN_FALSE : ParserState::ERROR);
+            break;
+        }
+        case ParserState::FAL_IN_FALSE:
+        {
+            state = (ch == 's' ? ParserState::FALS_IN_FALSE : ParserState::ERROR);
+            break;
+        }
+        case ParserState::FALS_IN_FALSE:
         {
             if(ch == 'e') {
                 tokens.back().m_end = p_cur;
@@ -360,6 +396,9 @@ JsonValue JsonParser::generateJsonValueViaTokens(list<JsonToken>& tokens)
     }
     else if (TokenType::True == token.m_token) {
         return JsonValue(true);
+    }
+    else if (TokenType::False == token.m_token) {
+        return JsonValue(false);
     }
     else if(TokenType::Double == token.m_token) {
         double x = atof(string(token.m_start, token.m_end).c_str());

@@ -4,5 +4,6 @@
     "Negative_Int":-15,
     "Negative_Doube":-9.8,
     "String":"test string",
-    "True":true
+    "True":true,
+    "Fasle":false
 }
