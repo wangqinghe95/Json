@@ -103,10 +103,10 @@ bool JsonValue::toBoolean() const
     return false;
 }
 
-const JsonValue& JsonValue::operator[](const string& key) const
-{
-    return (*m_value._object)[key];
-}
+// JsonValue JsonValue::operator[](const string& key)
+// {
+//     return toObject()[key];
+// }
 
 JsonValue::JsonValue(const JsonValue& other)
 {

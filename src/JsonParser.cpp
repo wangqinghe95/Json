@@ -79,7 +79,7 @@ JsonValue JsonParser::toJsonValue(const string& strJson)
                 tokens.emplace_back(TokenType::False, p_cur);
                 state = ParserState::F_IN_FALSE;
             }
-            else if (ch = 'n') {
+            else if (ch == 'n') {
                 tokens.emplace_back(TokenType::Null, p_cur);
                 state = ParserState::N_IN_NULL;
             }
@@ -106,7 +106,13 @@ JsonValue JsonParser::toJsonValue(const string& strJson)
         case ParserState::STRING_BEGIN:
         {
             tokens.emplace_back(TokenType::String, p_cur);
-            state = ParserState::STRING;
+            if('"' == ch) {
+                tokens.back().m_end = p_cur;
+                state = ParserState::END;                
+            }
+            else {
+                state = ParserState::STRING;
+            }
             break;
         }
         case ParserState::STRING:

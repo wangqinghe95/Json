@@ -40,7 +40,7 @@ public:
 
     bool toBoolean() const;
 
-    const JsonValue& operator[](const string& key) const;
+    // JsonValue operator[](const string& key);
 
     double toDouble() const;
 

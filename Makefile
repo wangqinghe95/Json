@@ -22,17 +22,14 @@ CFLAGS := -I$(INCLUDE_DIR)
 
 all: PRE_CHECK $(TARGET) 
 $(TARGET) : $(OBJ)
-	@echo "SRC: " $(SRC)
-	@echo "OBJ: " $(OBJ)
-	@echo "TARGET: " $(TARGET)
 	$(CC) $(CFLAGS) $(CXXFLAG) $^ -o $(TARGET) $(LIB)
 	mv $^ $(OBJOUT)
-	@echo "Compiling" $@ "end\n"
+	@echo "Compiling" $@ "end"
 
 %.o : %.cpp
 	echo "Compiling " $< "...."
 	$(CC) $(CFLAGS) $(CXXFLAG) -o $@ $(LIB) -c $^
-	@echo "Compiling " $@ "end\n"
+	@echo "Compile" $@ "end"
 
 PRE_CHECK:
 	@if [ -f $(TARGET) ];then	\

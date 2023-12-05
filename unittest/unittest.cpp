@@ -27,15 +27,23 @@ string readJsonFile(const string file_name)
 int main()
 {
     string str_json = readJsonFile(config_file);
-    // DEBUG("str_jsong:size", str_json.size(), " str_json: " , str_json);
 
     JsonValue root = JsonParser::toJsonValue(str_json);
     
-    // DEBUG("type ", static_cast<std::underlying_type<JsonValueType>::type>(type));
-    DEBUG("Root: ",JsonParser::toJsonString(root));
+    JsonObject result = root.toObject();
+    int number = result["Integer"].toLongLong();
+    double d_number = result["Double"].toDouble();
+    string string_mess = result["String"].toString();
+    bool b_true = result["True"].toBoolean();
+    bool b_false = result["Fasle"].toBoolean();
 
-    JsonValue integer = root["Integer"];
-    DEBUG("Root[Integer]: ",JsonParser::toJsonString(integer));
+    DEBUG("Integer: ", number);
+    DEBUG("Double: ", d_number);
+    DEBUG("String: ", string_mess);
+    DEBUG("Bool: ", b_true);
+
+    JsonObject object = result["object"].toObject();
+    JsonArray array = result["Array"].toArray();
 
     return 0;
 }
