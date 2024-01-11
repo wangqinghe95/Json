@@ -1,15 +1,11 @@
 #include "JsonParser.hpp"
-// #include "../FilesSystem/include/FileOperation.hpp"
-// #include "../Logger/include/Logger.hpp"
 #include "FileOperation.hpp"
 #include "Logger.hpp"
 
 #include <type_traits>
 
 const char* JSONFILENAME = "./unittest.json";
-// const std::string config_file("/home/user/Desktop/Github/Json/unittest/unittest.json");
 const std::string config_file("./unittest/unittest.json");
-
 
 string readJsonFile(const string file_name)
 {
