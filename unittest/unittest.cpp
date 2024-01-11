@@ -22,6 +22,7 @@ string readJsonFile(const string file_name)
 
 int main()
 {
+    DEBUG("20230111 test submodule");
     string str_json = readJsonFile(config_file);
 
     JsonValue root = JsonParser::toJsonValue(str_json);
